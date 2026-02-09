@@ -13,4 +13,5 @@ trips = trips[trips["end_time"] >= trips["start_time"]]
 
 system = BikeShareSystem(trips)
 
-
+if __name__ == "__main__":
+    main()
