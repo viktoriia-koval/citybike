@@ -6,6 +6,7 @@ from algorithms import merge_sort
 from datetime import datetime, timedelta
 from analyzer import BikeShareSystem
 from models import User, Bike, Station, Trip
+from numerical import compute_distances_between_stations, compute_trip_vectorized_stats
 
 def main555():
     # -------------------------
@@ -35,8 +36,8 @@ def main():
 
     print("Running main...")
     system = BikeShareSystem()
-    system.load_stations_from_csv()
-    system.load_trips_from_csv()
+    system.load_stations_from_csv("data\\stations_cleaned.csv")
+    system.load_trips_from_csv("data\\trips_cleaned.csv")
     system.load_maintenance_from_csv()
 
     print("before sort (first 20):", [trip.distance_km for trip in system.trips[:20]])
@@ -46,7 +47,7 @@ def main():
     merge_sort_time = perf_counter() - t1
     print("after merge sort (first 20):", [trip.distance_km for trip in system.trips[:20]])
 
-    system.load_trips_from_csv()
+    system.load_trips_from_csv("data\\trips_cleaned.csv")
 
     t2 = perf_counter()
     system.sort_trips_by_distance_sys()
@@ -73,6 +74,21 @@ def main():
             f"speed ratio (binary/pandas): "
             f"{station_search_time / station_search_sys_time:.2f}x"
         )
+
+    latitudes = pd.Series([station.latitude for station in system.stations]).to_numpy()
+    longitudes = pd.Series([station.longitude for station in system.stations]).to_numpy()
+    station_distances = compute_distances_between_stations(latitudes, longitudes)
+    print("station distance matrix shape:", station_distances.shape)
+    print("station distance matrix first row (5):", station_distances[0, :5].round(6).tolist())
+
+    trips_df = pd.read_csv("data\\trips_cleaned.csv")
+    durations = pd.to_numeric(trips_df["duration_minutes"], errors="coerce").dropna().to_numpy()
+    distances = pd.to_numeric(trips_df["distance_km"], errors="coerce").dropna().to_numpy()
+    stats = compute_trip_vectorized_stats(durations, distances)
+    print("duration stats:", stats["durations"])
+    print("distance stats:", stats["distances"])
+
+    
 
     
 
