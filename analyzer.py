@@ -1,6 +1,7 @@
 from models import Bike, User, Trip, MaintenanceRecord
 from factories import BikeFactory, UserFactory
 from pricing import PricingStrategy
+from utils import read_csv_rows
 
 class BikeShareSystem:
     def __init__(self):
@@ -13,6 +14,10 @@ class BikeShareSystem:
     def load_bikes(self, rows: list[dict]) -> None:
         for row in rows:
             self.bikes.append(BikeFactory.from_row(row))
+
+    def load_bikes_from_csv(self, path: str) -> None:
+        rows = read_csv_rows(path)
+        self.load_bikes(rows)
 
     def load_users(self, rows: list[dict]) -> None:
         for row in rows:
