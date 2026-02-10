@@ -37,3 +37,21 @@ def _merge(left: list[float], right: list[float], reverse: bool) -> list[float]:
         merged.extend(right[j:])
 
     return merged
+
+
+def binary_search(items: list[str], target: str) -> int:
+    left = 0
+    right = len(items) - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+        current = items[mid]
+
+        if current == target:
+            return mid
+        if current < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return -1

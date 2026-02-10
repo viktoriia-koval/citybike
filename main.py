@@ -1,3 +1,4 @@
+from platform import system
 import pandas as pd 
 from utils import load_raw_data, inspect_dataframe, clean_trips, clean_stations,  clean_maintenance, export_cleaned, RAW_DATA_DIR
 from time import perf_counter
@@ -31,31 +32,49 @@ def main555():
     
 
 def main():
+
     print("Running main...")
-    distances = [7.8, 2.4, 5.0, 1.1, 2.4]
-    distances = [5, 2, 4, 7, 1, 3]
-    sorted_distances = merge_sort(distances)
-    print("merge_sort example:", sorted_distances)
-
     system = BikeShareSystem()
-    user = User("U1", "Test User", "test@example.com", "member")
-    bike = Bike("B1", "classic", "available")
-    station = Station("S1", "Station 1", 10, 48.8, 9.2)
-    start = datetime.now()
+    system.load_stations_from_csv()
+    system.load_trips_from_csv()
+    system.load_maintenance_from_csv()
 
-    system.trips = [
-        Trip("T1", user, bike, station, station, start, start + timedelta(minutes=10), 3.7),
-        Trip("T2", user, bike, station, station, start, start + timedelta(minutes=15), 1.4),
-        Trip("T3", user, bike, station, station, start, start + timedelta(minutes=20), 2.1),
-    ]
+    print("before sort (first 20):", [trip.distance_km for trip in system.trips[:20]])
 
-    system.load_trips_from_csv()    
-
-    print("before sort:", [trip.distance_km for trip in system.trips[:20]])
+    t1 = perf_counter()
     system.sort_trips_by_distance()
-    print("after sort:", [trip.distance_km for trip in system.trips[:20]])
+    merge_sort_time = perf_counter() - t1
+    print("after merge sort (first 20):", [trip.distance_km for trip in system.trips[:20]])
 
+    system.load_trips_from_csv()
 
+    t2 = perf_counter()
+    system.sort_trips_by_distance_sys()
+    pandas_sort_time = perf_counter() - t2
+    print("after pandas sort (first 20):", [trip.distance_km for trip in system.trips[:20]])
+
+    print(f"merge sort time: {merge_sort_time:.6f} s")
+    print(f"pandas sort_values time: {pandas_sort_time:.6f} s")
+    if pandas_sort_time > 0:
+        print(f"speed ratio (merge/pandas): {merge_sort_time / pandas_sort_time:.2f}x")
+
+    t3 = perf_counter()
+    found_station = system.search_stations("ST100")
+    station_search_time = perf_counter() - t3
+    t4 = perf_counter()
+    found_station_sys = system.search_stations_sys("ST100")
+    station_search_sys_time = perf_counter() - t4
+    print("search station result:", found_station.station_id if found_station else None)
+    print("search station sys result:", found_station_sys.station_id if found_station_sys else None)
+    print(f"binary search station time: {station_search_time:.6f} s")
+    print(f"pandas .loc station time: {station_search_sys_time:.6f} s")
+    if station_search_sys_time > 0:
+        print(
+            f"speed ratio (binary/pandas): "
+            f"{station_search_time / station_search_sys_time:.2f}x"
+        )
+
+    
 
 if __name__ == "__main__":
     main()

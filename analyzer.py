@@ -1,9 +1,9 @@
 from models import Bike, User, Trip, MaintenanceRecord, Station
 from factories import BikeFactory, UserFactory
-from pricing import PricingStrategy
 from utils import read_csv_rows
-from algorithms import merge_sort
+from algorithms import merge_sort, binary_search
 from datetime import datetime
+import pandas as pd
 
 class BikeShareSystem:
     def __init__(self):
@@ -89,16 +89,20 @@ class BikeShareSystem:
             start_station = self._get_or_create_station(start_station_id)
             end_station = self._get_or_create_station(end_station_id)
 
-            trip = Trip(
-                trip_id=str(row["trip_id"]).strip(),
-                user=user,
-                bike=bike,
-                start_station=start_station,
-                end_station=end_station,
-                start_time=datetime.fromisoformat(str(row["start_time"]).strip()),
-                end_time=datetime.fromisoformat(str(row["end_time"]).strip()),
-                distance_km=float(row["distance_km"]),
-            )
+            try:
+                trip = Trip(
+                    trip_id=str(row["trip_id"]).strip(),
+                    user=user,
+                    bike=bike,
+                    start_station=start_station,
+                    end_station=end_station,
+                    start_time=datetime.fromisoformat(str(row["start_time"]).strip()),
+                    end_time=datetime.fromisoformat(str(row["end_time"]).strip()),
+                    distance_km=float(row["distance_km"]),
+                )
+            except (ValueError, TypeError):
+                continue
+
             self.trips.append(trip)
 
     def _get_or_create_bike(self, bike_id: str, bike_type: str) -> Bike:
@@ -157,8 +161,65 @@ class BikeShareSystem:
         self.trips = sorted_trips
         return self.trips
 
+    def sort_trips_by_distance_sys(self, reverse: bool = False) -> list[Trip]:
+        if not self.trips:
+            return self.trips
+
+        trips_df = pd.DataFrame(
+            {
+                "index": list(range(len(self.trips))),
+                "distance_km": [trip.distance_km for trip in self.trips],
+            }
+        )
+        trips_df = trips_df.sort_values(
+            by="distance_km",
+            ascending=not reverse,
+            kind="mergesort",
+        )
+        self.trips = [self.trips[int(i)] for i in trips_df["index"].tolist()]
+        return self.trips
+
+    def search_stations(self, query: str, by: str = "station_id") -> Station | None:
+        if by not in {"station_id", "station_name"}:
+            raise ValueError("by must be 'station_id' or 'station_name'")
+        if not self.stations:
+            return None
+
+        normalized_query = query.strip().lower()
+        key_name = "station_id" if by == "station_id" else "name"
+
+        sorted_stations = sorted(
+            self.stations,
+            key=lambda station: str(getattr(station, key_name)).strip().lower(),
+        )
+        keys = [str(getattr(station, key_name)).strip().lower() for station in sorted_stations]
+        index = binary_search(keys, normalized_query)
+        if index == -1:
+            return None
+        return sorted_stations[index]
+
+    def search_stations_sys(self, query: str, by: str = "station_id") -> Station | None:
+        if by not in {"station_id", "station_name"}:
+            raise ValueError("by must be 'station_id' or 'station_name'")
+        if not self.stations:
+            return None
+
+        key_name = "station_id" if by == "station_id" else "name"
+        normalized_query = query.strip().lower()
+
+        stations_df = pd.DataFrame(
+            {
+                "station_obj": self.stations,
+                "station_id": [station.station_id for station in self.stations],
+                "name": [station.name for station in self.stations],
+            }
+        )
+        normalized_col = stations_df[key_name].astype(str).str.strip().str.lower()
+        matched = stations_df.loc[normalized_col == normalized_query, "station_obj"]
+        if matched.empty:
+            return None
+        return matched.iloc[0]
+
     # -------- Reporting --------
-    def compute_trip_cost(
-        self, trip: Trip, pricing_strategy: PricingStrategy
-    ) -> float:
+    def compute_trip_cost(self, trip: Trip, pricing_strategy) -> float:
         return pricing_strategy.compute_cost(trip)
