@@ -7,7 +7,6 @@ from analyzer import BikeShareSystem
 from numerical import compute_distances_between_stations, compute_trip_vectorized_stats
 from visualization import create_all_visualizations
 
-
 def benchmark_sorting(system_data: BikeShareSystem, runs: int = 10) -> dict[str, float]:
     """Vergleicht Sortierzeiten von merge_sort, pandas sort_values und built-in sorted."""
     distances = [trip.distance_km for trip in system_data.trips]

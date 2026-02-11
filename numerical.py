@@ -2,7 +2,6 @@
 
 import numpy as np
 
-
 def compute_distances_between_stations(
     latitudes: np.ndarray, longitudes: np.ndarray
 ) -> np.ndarray:

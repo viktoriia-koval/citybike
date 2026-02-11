@@ -1,9 +1,7 @@
 """Hilfsmodul zum Laden, Pruefen, Bereinigen und Exportieren von CityBike-Daten."""
 import csv
 from pathlib import Path
-
 import pandas as pd
-
 
 RAW_DATA_DIR = Path("data")
 
