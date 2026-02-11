@@ -28,7 +28,7 @@ class Bike(Entity):
         if status not in self.VALID_STATUS:
             raise ValueError("Ungültiger Fahrradstatus")
 
-        super().__init__(bike_id)
+        super().  __init__(bike_id)
         self.bike_id = bike_id
         self.bike_type = bike_type
         self.status = status

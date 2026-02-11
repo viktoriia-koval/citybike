@@ -1,0 +1,48 @@
+CityBike Analytics Summary Report
+================================
+
+Data sources:
+- Trips: data\trips_cleaned.csv
+- Stations: data\stations_cleaned.csv
+- Maintenance: data\maintenance_cleaned.csv
+
+1) Core KPIs
+- Total trips: 1490
+- Total distance (km): 11426.33
+- Average trip duration (min): 23.63
+
+2) Station popularity
+- Top start station: ST106
+- Top end station: ST114
+
+3) Temporal demand
+- Peak usage hour: 21:00
+- Highest trip-volume weekday: Tuesday (228 trips)
+
+4) Customer and behavior insights
+- Avg distance by user type: {'casual': 7.5, 'member': 7.76}
+- Avg trips per user by user type: {'casual': 8.22, 'member': 14.71}
+
+5) Fleet and utilization
+- Bike utilization rate (approx): 0.15%
+- Most maintained bike: BK261 (12 records)
+
+6) Growth and retention
+- Monthly trend growing: False
+- Monthly trend slope: -0.091
+- Completion rate: 88.39% (Completed=1317, Cancelled=173)
+
+7) Business hotspots
+- Top active user: USR1014 (59 trips)
+- Top route: ST113 -> ST105 (14 trips)
+
+8) Maintenance spend
+- Maintenance cost by bike type: {'classic': 5496.39, 'electric': 13988.04}
+
+9) Data quality / anomalies
+- Outlier trips detected (z-score > 3 on duration/distance): 29
+
+Exported tables:
+- output\reports\top_stations.csv
+- output\reports\top_users.csv
+- output\reports\maintenance_summary.csv
