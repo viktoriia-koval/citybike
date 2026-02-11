@@ -1,9 +1,6 @@
 """Modul mit vektorisierten numerischen Berechnungen fuer CityBike-Daten."""
 
-from __future__ import annotations
-
 import numpy as np
-
 
 def compute_distances_between_stations(
     latitudes: np.ndarray, longitudes: np.ndarray
