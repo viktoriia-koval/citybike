@@ -1,4 +1,4 @@
-from __future__ import annotations
+"""Modul zum Erstellen und Speichern zentraler CityBike-Visualisierungen."""
 
 from pathlib import Path
 
@@ -51,6 +51,7 @@ def _save(fig: plt.Figure, filename: str) -> None:
 
 
 def bar_trips_per_station(trips: pd.DataFrame) -> None:
+    """Erzeugt ein Balkendiagramm der zehn meistgenutzten Startstationen."""
     top = trips["start_station_id"].value_counts().head(10)
     fig, ax = plt.subplots()
     ax.bar(top.index, top.values, color="#2E86AB", label="Trip count")
@@ -62,6 +63,7 @@ def bar_trips_per_station(trips: pd.DataFrame) -> None:
 
 
 def line_monthly_trip_trend(trips: pd.DataFrame) -> None:
+    """Erzeugt ein Liniendiagramm zum monatlichen Trend der Fahrten."""
     monthly = trips.set_index("start_time").resample("ME").size()
     fig, ax = plt.subplots()
     ax.plot(monthly.index, monthly.values, marker="o", color="#F18F01", label="Monthly trips")
@@ -73,6 +75,7 @@ def line_monthly_trip_trend(trips: pd.DataFrame) -> None:
 
 
 def histogram_trip_duration(trips: pd.DataFrame) -> None:
+    """Erzeugt ein Histogramm der Fahrtdauer in Minuten."""
     durations = trips["duration_minutes"].dropna()
     fig, ax = plt.subplots()
     ax.hist(durations, bins=30, color="#4CAF50", alpha=0.85, label="Trip durations")
@@ -84,6 +87,7 @@ def histogram_trip_duration(trips: pd.DataFrame) -> None:
 
 
 def boxplot_duration_by_user_type(trips: pd.DataFrame) -> None:
+    """Erzeugt einen Boxplot der Fahrtdauer nach Nutzertyp."""
     data = [
         trips.loc[trips["user_type"] == "casual", "duration_minutes"].dropna(),
         trips.loc[trips["user_type"] == "member", "duration_minutes"].dropna(),
@@ -104,6 +108,7 @@ def boxplot_duration_by_user_type(trips: pd.DataFrame) -> None:
 def bar_revenue_by_user_type(
     trips: pd.DataFrame, base_fare: float = 1.0, per_km_rate: float = 0.4
 ) -> None:
+    """Erzeugt ein Balkendiagramm des geschaetzten Umsatzes pro Nutzertyp."""
     revenue_df = trips[["user_type", "distance_km"]].copy()
     revenue_df["estimated_revenue"] = base_fare + revenue_df["distance_km"] * per_km_rate
     revenue = revenue_df.groupby("user_type")["estimated_revenue"].sum().sort_values(ascending=False)
@@ -118,6 +123,7 @@ def bar_revenue_by_user_type(
 
 
 def create_all_visualizations() -> None:
+    """Laedt Daten und erstellt alle definierten Visualisierungen."""
     _setup_style()
     trips, maintenance = _load_data()
     bar_trips_per_station(trips)

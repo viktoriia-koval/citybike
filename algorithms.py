@@ -1,4 +1,7 @@
+"""Modul mit grundlegenden Sortier- und Suchalgorithmen."""
+
 def merge_sort(items: list[float], reverse: bool = False) -> list[float]:
+    """Sortiert numerische Werte per Merge Sort und gibt eine neue Liste zurueck."""
     if len(items) <= 1:
         return items[:]
 
@@ -40,6 +43,7 @@ def _merge(left: list[float], right: list[float], reverse: bool) -> list[float]:
 
 
 def binary_search(items: list[str], target: str) -> int:
+    """Sucht ein Ziel in einer sortierten String-Liste und liefert den Index oder -1."""
     left = 0
     right = len(items) - 1
 

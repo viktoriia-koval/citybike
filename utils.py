@@ -1,3 +1,5 @@
+"""Hilfsmodul zum Laden, Pruefen, Bereinigen und Exportieren von CityBike-Daten."""
+
 from __future__ import annotations
 
 import csv
@@ -10,6 +12,7 @@ RAW_DATA_DIR = Path("data")
 
 
 def read_csv_rows(path: str | Path) -> list[dict]:
+    """Liest eine CSV-Datei und gibt alle Zeilen als Liste von Dictionaries zurueck."""
     csv_path = Path(path)
     with csv_path.open("r", encoding="utf-8", newline="") as file:
         return list(csv.DictReader(file))
@@ -17,6 +20,7 @@ def read_csv_rows(path: str | Path) -> list[dict]:
 
 
 def inspect_dataframe(name: str, df: pd.DataFrame) -> None:
+    """Gibt kompakte Diagnosen zu Struktur, Statistik und fehlenden Werten aus."""
     print(f"\n=== {name} | info() ===")
     df.info()
     print(f"\n=== {name} | describe(include='all') ===")
@@ -26,6 +30,7 @@ def inspect_dataframe(name: str, df: pd.DataFrame) -> None:
 
 
 def load_raw_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Laedt Rohdaten fuer Fahrten, Stationen und Wartung aus dem Datenordner."""
     trips = pd.read_csv(RAW_DATA_DIR / "trips.csv")
     stations = pd.read_csv(RAW_DATA_DIR / "stations.csv")
     maintenance = pd.read_csv(RAW_DATA_DIR / "maintenance.csv")
@@ -33,6 +38,7 @@ def load_raw_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
 
 
 def clean_trips(df: pd.DataFrame) -> pd.DataFrame:
+    """Bereinigt Fahrtdaten, normalisiert Kategorien und entfernt ungueltige Datensaetze."""
     cleaned = df.copy()
 
     # Parse datetimes; drop rows with invalid timestamps because trip timing is core data.
@@ -85,6 +91,7 @@ def clean_trips(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def clean_stations(df: pd.DataFrame) -> pd.DataFrame:
+    """Bereinigt Stationsdaten und validiert Kapazitaet sowie Koordinatenbereiche."""
     cleaned = df.copy()
 
     cleaned["capacity"] = pd.to_numeric(cleaned["capacity"], errors="coerce")
@@ -104,6 +111,7 @@ def clean_stations(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def clean_maintenance(df: pd.DataFrame) -> pd.DataFrame:
+    """Bereinigt Wartungsdaten und normalisiert Typen sowie Textfelder."""
     cleaned = df.copy()
 
     cleaned["date"] = pd.to_datetime(cleaned["date"], errors="coerce")
@@ -130,6 +138,7 @@ def clean_maintenance(df: pd.DataFrame) -> pd.DataFrame:
 def export_cleaned(
     trips: pd.DataFrame, stations: pd.DataFrame, maintenance: pd.DataFrame
 ) -> None:
+    """Exportiert bereinigte Fahrten-, Stations- und Wartungsdaten als CSV-Dateien."""
  
     trips.to_csv(RAW_DATA_DIR / "trips_cleaned.csv", index=False)
     stations.to_csv(RAW_DATA_DIR / "stations_cleaned.csv", index=False)

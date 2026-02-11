@@ -1,3 +1,5 @@
+"""Modul mit den zentralen Datenmodellen des CityBike-Systems."""
+
 from abc import ABC, abstractmethod
 from datetime import datetime
 
@@ -6,7 +8,7 @@ class Entity(ABC):
     Abstrakte Basisklasse für alle Entitäten im System
     """
 
-    def __init__(self, entity_id: str):
+    def __init__(self, entity_id: str) -> None:
         self.id = entity_id
         self.created_at = datetime.now()
 
@@ -24,7 +26,7 @@ class Bike(Entity):
 
     VALID_STATUS = {"available", "in_use", "maintenance"}
 
-    def __init__(self, bike_id: str, bike_type: str, status: str):
+    def __init__(self, bike_id: str, bike_type: str, status: str) -> None:
         if status not in self.VALID_STATUS:
             raise ValueError("Ungültiger Fahrradstatus")
 
@@ -46,7 +48,7 @@ class ClassicBike(Bike):
     Klassisches Fahrrad
     """
 
-    def __init__(self, bike_id: str, gear_count: int):
+    def __init__(self, bike_id: str, gear_count: int) -> None:
         if gear_count <= 0:
             raise ValueError("Ganganzahl muss positiv sein")
 
@@ -63,7 +65,7 @@ class ElectricBike(Bike):
     Elektrisches Fahrrad
     """
 
-    def __init__(self, bike_id: str, battery_level: float, max_range_km: float):
+    def __init__(self, bike_id: str, battery_level: float, max_range_km: float) -> None:
         if battery_level < 0:
             raise ValueError("Batteriestand darf nicht negativ sein")
         if max_range_km <= 0:
@@ -91,7 +93,7 @@ class Station(Entity):
         capacity: int,
         latitude: float,
         longitude: float,
-    ):
+    ) -> None:
         if capacity <= 0:
             raise ValueError("Kapazität muss positiv sein")
 
@@ -115,7 +117,7 @@ class User(Entity):
     Basisklasse für Nutzer
     """
 
-    def __init__(self, user_id: str, name: str, email: str, user_type: str):
+    def __init__(self, user_id: str, name: str, email: str, user_type: str) -> None:
         if "@" not in email:
             raise ValueError("Ungültige E-Mail-Adresse")
 
@@ -144,7 +146,7 @@ class CasualUser(User):
         name: str,
         email: str,
         day_pass_count: int,
-    ):
+    ) -> None:
         if day_pass_count < 0:
             raise ValueError("Anzahl der Tagespässe darf nicht negativ sein")
 
@@ -171,7 +173,7 @@ class MemberUser(User):
         membership_start: datetime,
         membership_end: datetime,
         tier: str,
-    ):
+    ) -> None:
         if tier not in self.VALID_TIERS:
             raise ValueError("Ungültiger Mitgliedschaftstyp")
         if membership_end <= membership_start:
@@ -202,7 +204,7 @@ class Trip:
         start_time: datetime,
         end_time: datetime,
         distance_km: float,
-    ):
+    ) -> None:
         if distance_km < 0:
             raise ValueError("Distanz darf nicht negativ sein")
         if end_time < start_time:
@@ -244,7 +246,7 @@ class MaintenanceRecord:
         maintenance_type: str,
         cost: float,
         description: str,
-    ):
+    ) -> None:
         if cost < 0:
             raise ValueError("Kosten dürfen nicht negativ sein")
 
