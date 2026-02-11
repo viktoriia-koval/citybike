@@ -1,7 +1,4 @@
 """Hilfsmodul zum Laden, Pruefen, Bereinigen und Exportieren von CityBike-Daten."""
-
-from __future__ import annotations
-
 import csv
 from pathlib import Path
 

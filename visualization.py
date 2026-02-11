@@ -1,10 +1,8 @@
 """Modul zum Erstellen und Speichern zentraler CityBike-Visualisierungen."""
 
 from pathlib import Path
-
 import matplotlib.pyplot as plt
 import pandas as pd
-
 
 DATA_DIR = Path("data")
 OUT_DIR = Path("output") / "figures"

@@ -1,7 +1,5 @@
 """Modul mit vektorisierten numerischen Berechnungen fuer CityBike-Daten."""
 
-from __future__ import annotations
-
 import numpy as np
 
 

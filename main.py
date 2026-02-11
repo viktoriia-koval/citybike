@@ -1,24 +1,10 @@
 """Hauptmodul zum Ausfuehren der CityBike-Datenpipeline und Analyse."""
 
-from platform import system
 import timeit
-from datetime import datetime, timedelta
-
 import pandas as pd
-
 from algorithms import binary_search, merge_sort
 from analyzer import BikeShareSystem
-from models import Bike, Station, Trip, User
 from numerical import compute_distances_between_stations, compute_trip_vectorized_stats
-from utils import (
-    RAW_DATA_DIR,
-    clean_maintenance,
-    clean_stations,
-    clean_trips,
-    export_cleaned,
-    inspect_dataframe,
-    load_raw_data,
-)
 from visualization import create_all_visualizations
 
 
