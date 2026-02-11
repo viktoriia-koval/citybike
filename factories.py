@@ -1,8 +1,13 @@
+"""Modul mit Fabrikklassen zum Erzeugen von Modellobjekten aus Zeilendaten."""
+
 from models import Bike, ClassicBike, ElectricBike, User, CasualUser, MemberUser
 
 class BikeFactory:
+    """Erzeugt Fahrradobjekte anhand des Typs in den Eingabedaten."""
+
     @staticmethod
     def from_row(row: dict) -> Bike:
+        """Erstellt ein passendes Fahrradobjekt aus einer Datenzeile."""
         bike_type = row.get("bike_type")
 
         if bike_type == "classic":
@@ -24,8 +29,11 @@ class BikeFactory:
             )
 
 class UserFactory:
+    """Erzeugt Nutzerobjekte anhand des Typs in den Eingabedaten."""
+
     @staticmethod
     def from_row(row: dict) -> User:
+        """Erstellt ein passendes Nutzerobjekt aus einer Datenzeile."""
         user_type = row.get("user_type")
 
         if user_type == "casual":
