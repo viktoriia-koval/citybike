@@ -48,12 +48,3 @@ def compute_batch_fares(
     return base_fare + dist * per_km_rate
 
 
-def zscore_outlier_mask(values: np.ndarray, threshold: float = 3.0) -> np.ndarray:
-    """Liefert eine boolesche Maske fuer Ausreisser auf Basis des Z-Scores."""
-    arr = np.asarray(values, dtype=float)
-    mean = np.mean(arr)
-    std = np.std(arr)
-    if std == 0:
-        return np.zeros(arr.shape, dtype=bool)
-    z = (arr - mean) / std
-    return np.abs(z) > threshold
