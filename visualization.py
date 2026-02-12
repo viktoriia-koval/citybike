@@ -43,7 +43,7 @@ def _setup_style() -> None:
 
 def _save(fig: plt.Figure, filename: str) -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout()
+    fig.tight_layout() # Passt die Abstände automatisch an
     fig.savefig(OUT_DIR / filename, dpi=160, bbox_inches="tight")
     plt.close(fig)
 
